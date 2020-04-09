@@ -16,6 +16,8 @@
 
 package com.downloader.httpclient;
 
+import android.util.Base64;
+
 import com.downloader.Constants;
 import com.downloader.request.DownloadRequest;
 
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import static com.downloader.BuildConfig.DC_DOWNLOADER_CREDS;
 
 /**
  * Created by amitshekhar on 13/11/17.
@@ -51,6 +55,8 @@ public class DefaultHttpClient implements HttpClient {
     @Override
     public void connect(DownloadRequest request) throws IOException {
         connection = new URL(request.getUrl()).openConnection();
+        String basicAuth = "Basic " + Base64.encodeToString(DC_DOWNLOADER_CREDS.getBytes(), Base64.DEFAULT);
+        connection.setRequestProperty("Authorization", basicAuth);
         connection.setReadTimeout(request.getReadTimeout());
         connection.setConnectTimeout(request.getConnectTimeout());
         final String range = String.format(Locale.ENGLISH,
